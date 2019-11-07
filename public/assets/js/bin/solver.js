@@ -19,39 +19,20 @@ function NewArray() {
     };
 };
 
-function dupeCheck(arr) {
-    "use strict";
-    var result = {};
-
-    if (arr instanceof Array) {
-        arr.forEach((v, i) => {
-            if (!result[v]) {
-                result[v] = [i];
-            } else {
-                result[v].push(i);
-            }
-        })
-    }
-    return result;
-}
-
 function findDupes(item, index, arr) {
     return arr.indexOf(item) != index;
 }
 
 var puzzleColumns = new NewArray();
 var puzzleRows = new NewArray();
-var puzzleBlocks = new NewArray();
 const uniqueNums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-console.log(puzzleColumns);
 
 function buildArrays(pzlString) {
     var inputString = pzlString.replace(/[.]/gi, "0");
     for (let row = 1; row <= 9; row++) {
         for (let column = 1; column <= 9; column++) {
-            puzzleColumns[column][row] = inputString.charAt((row-1)*9+column);            
-            puzzleRows[column][row] = inputString.charAt((column-1)*9+row);
+            puzzleColumns[column][row] = parseInt(inputString.charAt((row-1)*9+column));            
+            puzzleRows[column][row] = parseInt(inputString.charAt((column-1)*9+row));
         }
     }
     console.log(puzzleColumns);
@@ -60,7 +41,7 @@ function buildArrays(pzlString) {
 }
 
 buildArrays("s..1......6....9..35.2.6.84..7.8.....9.32.56.4.....3.7..69.3.5.22..9....8......4..");
-checkRow(1);
+checkRow(1, console.log);
 
 function seedCells() {
     let puzzleSize = puzzleWidth * puzzleHeight;
@@ -86,10 +67,14 @@ function findPossibles() {
 function checkRow(xVal, cb) {
     var selectedRow = puzzleRows[xVal];
     if (selectedRow.indexOf(0) >= 0) {
+        console.log("Empty box(es) found.");
         cb(false);
+    } else if (selectedRow.filter(findDupes).length > 0) {
+        console.log("Duplicates found.");
+        cb(false);        
+    } else {
+        cb(true);
     }
-
-    console.log(selectedRow.filter(findDupes));
 }
 
 //Test stuff, remove later V
